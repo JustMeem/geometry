@@ -1,31 +1,6 @@
 #include <stdio.h>
-#define PI 3.14159265358979323846
 #define MOD(x) (x < 0 ? (-x) : x)
 
-typedef struct{
-	float x,y;
-}Point;
-
-typedef struct{
-	float rad;
-        Point center;
-
-}Circle;
-
-int isIntersects ()
-{
-
-}
-
-int getPerimeter (Circle circle)
-{
-	return 2 * PI * circle.rad;
-}
-
-int getArea (Circle circle)
-{
-	return PI * circle.rad * circle.rad;
-}
 
 int equals (char* string1, char* string2)
 {
@@ -68,7 +43,7 @@ float parsefloat (char* string)
 	string++;
 	int i = -1;
 	while (*(string++)){
-		num += (string - 48) * indegree(10, i--);
+		num += (int)(string - 48) * indegree(10, i--);
 	}
 	return flag ? -num : num;
 }
@@ -82,7 +57,7 @@ int getstring (char* string)
 {
 	char buffer;
 	int i = 0;
-	while((buffer = getchar()) != "\n"){
+	while((buffer = getchar()) != '\n'){
 		if ((buffer == EOF)||(i > 254))
 			return 0;
 		string[i++] = buffer;
