@@ -11,6 +11,7 @@ int getstring(char *string)
 			return 0;
 		string[i++] = buffer;
 	}
+	string[i] = EOF;
 	return 1;
 }
 

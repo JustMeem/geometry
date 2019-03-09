@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #ifndef MOD
-#define MOD(x) (x < 0 ? (-x) : x)
+#define MOD(x) ((x) < 0 ? (-x) : (x))
 #endif
 
 int lsearch(char *chars, int n, char c)
