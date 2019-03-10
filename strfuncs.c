@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <math.h>
-#ifndef MOD
-#define MOD(x) ((x) < 0 ? (-x) : (x))
-#endif
+#include "strfuncs.h"
 
 int lsearch(char *chars, int n, char c)
 {
@@ -41,7 +37,7 @@ char **split(char *string, char *chars, int n)
 		}
 	}
 
-	char **strings = calloc(sizeof(char *) * counter);
+	char **strings = malloc(sizeof(char *) * counter);
 	if (strings == NULL)
 	{
 		return NULL;
