@@ -1,28 +1,5 @@
 #include "figures.h"
 
-typedef struct Point
-{
-	float x, y;
-} Point;
-
-typedef struct Circle
-{
-	float rad;
-	Point center;
-
-} Circle;
-
-typedef struct Triangle
-{
-	Point *points;
-} Triangle;
-
-typedef struct
-{
-	Point *points;
-	int n;
-} Shape;
-
 char *toString(const Circle *c)
 {
 	char *string = malloc(sizeof(char) * 100);
@@ -39,7 +16,6 @@ char *toString(const Shape *s) // Закончить
 		return NULL;
 	for (int i = 0; i < s->n; i++)
 	{
-		
 	}
 
 	return string;
@@ -57,30 +33,99 @@ char *toString(const Triangle *t)
 	return string;
 }
 
-
 int interpret(char *string, void *figure)
 /*функция распознающая входные данные из строк, создающая объекты-фигуры
-и записывающая их в аргумент-указатель,
+и записывающая их адрес в аргумент-указатель,
 возвращает код, где:
 "3" - полигон
 "2" - треугольник
 "1" - круг
 "0" - ошибка выделения памяти
-"-1" - неизвестная фигура*/
+"-1" - неизвестная фигура
+"-2" - неправильные параметры*/
 {
 	char chars[] = {'(', ')', ' ', ','};
 	char **strings = split(string, chars, 4);
-	if (equals(strings[1], "circle"))
+	if (equals(strings[0], "circle"))
 	{
-		figure = malloc(sizeof(Circle));
+		Circle *circle = malloc(sizeof(Circle));
+		if (circle == NULL)
+			return 0;
+		int counter = 0;
+		while (strings[1 + counter++]);
+		if (counter != 3)
+		{
+			free(circle);
+			return -2;
+		}
+		circle->center.x = parseFloat(strings[1]);
+		circle->center.y = parseFloat(strings[2]);
+		circle->rad = parseFloat(string[3]);
+		figure = circle;
+		free(strings);
+		return 1;
 	}
-	else if (equals(strings[1], "triangle"))
+	else if (equals(strings[0], "triangle"))
 	{
-		/* code */
+		strings++;
+		Triangle *trgl = malloc(sizeof(Shape));
+		if (trgl == NULL)
+			return 0;
+		int counter = 0;
+		while (strings[counter++]);
+		if (counter != 8)
+		{
+			free(trgl);
+			return -2;
+		}
+		trgl->points = malloc(sizeof(Point) * 4);
+		if (trgl->points == NULL)
+		{
+			free(trgl);
+			return 0;
+		}
+		Point p;
+		int j = 0;
+		for (int i = 0; i < 8; i += 2)
+		{
+			p = trgl->points[j++];
+			p.x = parseFloat(strings[i]);
+			p.y = parseFloat(strings[i + 1]);
+		}
+		figure = trgl;
+		free(strings);
+		return 3;
 	}
-	else if (equals(strings[1], "polygon"))
+	else if (equals(strings[0], "polygon"))
 	{
-		/* code */
+		strings++;
+		Shape *shape = malloc(sizeof(Shape));
+		if (shape == NULL)
+			return 0;
+		int counter = 0;
+		while (strings[counter++]);
+		if ((counter % 2 == 1) || (counter < 8)){
+			free(shape);
+			return -2;
+		}
+		shape->n = counter / 2;
+		shape->points = malloc(sizeof(Point) * (counter / 2));
+		if (shape->points == NULL)
+		{
+			free(shape);
+			return 0;
+		}
+		Point p;
+		int j = 0;
+		for (int i = 0; i < counter; i += 2)
+		{
+			p = shape->points[j++];
+			p.x = parseFloat(strings[i]);
+			p.y = parseFloat(strings[i + 1]);
+		}
+		figure = shape;
+		free(strings);
+		return 3;
 	}
 	else
 	{
@@ -91,7 +136,7 @@ int interpret(char *string, void *figure)
 int isIntersects(const Circle *c1, const Circle *c2)
 {
 	return sqrt(powf(c1->center.x - c2->center.x, 2) + powf(c1->center.y - c2->center.y, 2)) <=
-		   c1->rad + c2->rad; // сравнение растояния между точками и суммой радиусов
+		   c1->rad + c2->rad; // сравнение растояния между центрами и суммой радиусов
 }
 
 int isIntersects(const Shape *s1, const Shape *s2) {}
@@ -112,6 +157,13 @@ int isIntersects(const Shape *shape, const Triangle *trgl) {}
 int isIntersects(const Triangle *trgl, const Shape *shape)
 {
 	return isIntersects(shape, trgl);
+}
+
+int isIntersects(const Circle *circle, const Triangle *trgl) {}
+
+int isIntersects(const Triangle *trgl, const Circle *circle)
+{
+	return isIntersects(circle, trgl);
 }
 
 float getPerimeter(const Circle *circle)

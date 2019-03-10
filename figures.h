@@ -10,11 +10,28 @@
 #define MOD(x) ((x) < 0 ? (-x) : (x))
 #endif
 
-typedef struct Circle Circle;
+typedef struct Point
+{
+	float x, y;
+} Point;
 
-typedef struct Triangle Triangle;
+typedef struct Circle
+{
+	float rad;
+	Point center;
 
-typedef struct Shape Shape;
+} Circle;
+
+typedef struct Triangle
+{
+	Point *points;
+} Triangle;
+
+typedef struct Shape
+{
+	Point *points;
+	int n;
+} Shape;
 
 char *toString(const Circle *c);
 
@@ -37,6 +54,10 @@ int isIntersects(const Shape *shape, const Circle *circle);
 int isIntersects(const Shape *shape, const Triangle *trgl);
 
 int isIntersects(const Triangle *trgl, const Shape *shape);
+
+int isIntersects(const Circle *circle, const Triangle *trgl);
+
+int isIntersects(const Triangle *trgl, const Circle *circle);
 
 float getPerimeter(const Circle *circle);
 

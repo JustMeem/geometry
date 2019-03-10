@@ -22,7 +22,7 @@ int equals(char *string1, char *string2)
 
 char **split(char *string, char *chars, int n)
 /* замещает символы строки встречающиеся в chars на NULL
-и возвращает массив подстрок*/
+и возвращает массив подстрок, заканчивающийся нулевым адресом*/
 {
 	int counter = 0;
 	char *buffer = string;
@@ -37,14 +37,15 @@ char **split(char *string, char *chars, int n)
 		}
 	}
 
-	char **strings = malloc(sizeof(char *) * counter);
+	char **strings = malloc(sizeof(char *) * counter + 2);
 	if (strings == NULL)
 	{
 		return NULL;
 	}
 
 	string = buffer;
-	int j = 0;
+	int j = 1;
+	*strings = buffer;
 	while (*(string++))
 	{
 		for (int i = 0; i < n; i++)
@@ -59,6 +60,7 @@ char **split(char *string, char *chars, int n)
 			}
 		}
 	}
+	strings[j] = NULL;
 	return strings;
 }
 
