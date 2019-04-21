@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "figures.h"
+#include "shape.h"
 
 int getstring(char *string)
 {

@@ -80,7 +80,7 @@ float parseFloat(char *string) // на вход принимается толь�
 	int i = -1;
 	while (*(string++))
 	{
-		num += (int)(string - 48) * powf(10, i--);
+		num += (int)(*string - 48) * powf(10, i--);
 	}
 	return flag ? -num : num;
 }

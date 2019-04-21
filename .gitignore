@@ -1,2 +1,3 @@
 geometry_project.exe
-.vscode/tasks.json
+.vscode
+!.vscode/tasks.json
