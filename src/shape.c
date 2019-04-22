@@ -23,25 +23,26 @@ char *toString(const Shape *s)
 		return NULL;
 	if (s->radius)
 	{
-		sprintf(string, "Circle(%f %f, %f)", s->points->x, s->points->y, s->radius);
+		sprintf(string, "circle(%f %f, %f)", s->points->x, s->points->y, s->radius);
 	}
 	else
 	{
 		char *buffer = string;
 		if (s->n == 4)
 		{
-			sprintf(string, "Triangle((");
+			sprintf(string, "triangle((");
 			string += 10;
 		}
 		else
 		{
-			sprintf(string, "Shape((");
+			sprintf(string, "shape((");
 			string += 7;
 		}
 		for (int i = 0; i < s->n; i++)
 		{
 			sprintf(string, "% .4f % .4f ,", s->points[i].x, s->points[i].y);
-			string += abs((int)(s->points[i].x / 10)) + abs((int)(s->points[i].y / 10)) + 15;
+			string += abs((int)(s->points[i].x / 10)) +
+					  abs((int)(s->points[i].y / 10)) + 15;
 		}
 		string[-1] = '\0';
 	}
@@ -209,7 +210,8 @@ int isIntersects(const Shape *s1, const Shape *s2)
 				{
 					Point vector = {points2[i + 1].x - points2[i].x,
 									points2[i + 1].y - points2[i].x};
-					cosinus = (vector.x - vector.y) / sqrt(pow(vector.x, 2) + pow(vector.y, 2));
+					cosinus = (vector.x - vector.y) /
+							  sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 					Point proj1 = {points1[0].x * cosinus, points1[0].x * cosinus};
 					for (int j = 1; j < s1->n - 1; j++)
 					{
