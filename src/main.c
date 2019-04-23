@@ -1,6 +1,23 @@
 #include <stdio.h>
 #include "shape.h"
 
+
+struct stringlistnode;
+typedef struct stringlistnode stringlistnode;
+struct stringlistnode
+{
+	stringlistnode *next;
+	char *string;
+};
+struct listnode;
+typedef struct listnode listnode;
+struct listnode
+{
+	Shape *s;
+	listnode *next;
+	stringlistnode *intersections;
+};
+
 int stringStream(char *string)
 {
 	char buffer;
@@ -11,22 +28,10 @@ int stringStream(char *string)
 			return 0;
 		string[i++] = buffer;
 	}
-	string[i] = EOF;
+	string[i] = '\0';
 	return 1;
 }
 
-typedef struct stringlistnode
-{
-	stringlistnode *next;
-	char *string;
-} stringlistnode;
-
-typedef struct listnode
-{
-	Shape *s;
-	listnode *next;
-	stringlistnode *intersections;
-} listnode;
 
 void addIntersection(stringlistnode *node, const Shape *s, size_t n)
 {
@@ -36,7 +41,7 @@ void addIntersection(stringlistnode *node, const Shape *s, size_t n)
 	}
 	if (!(node->next = malloc(sizeof(stringlistnode))))
 	{
-		printf("Memory access error");
+		printf("Memory access error\n");
 		return;
 	}
 	node = node->next;
@@ -65,19 +70,19 @@ int main()
 		counter++;
 		if (!(buffer->next = malloc(sizeof(listnode))))
 		{
-			printf("Memory access error");
+			printf("Memory access error\n");
 			return 0;
 		}
 		switch (interpret(string, &(buffer->next->s)))
 		{
 		case 1:
-			printf("Memory access error");
+			printf("Memory access error\n\n");
 			return 0;
 		case -1:
-			printf("Unexpected figure type");
+			printf("Unexpected figure type\n");
 			break;
 		case -2:
-			printf("Invaild figure parameters");
+			printf("Invaild figure parameters\n");
 			break;
 		default:
 			buffer = buffer->next;
@@ -100,7 +105,7 @@ int main()
 				{
 					if (!(s->intersections = malloc(sizeof(stringlistnode))))
 					{
-						printf("Memory access error");
+						printf("Memory access error\n");
 						return 0;
 					}
 					s->intersections->next = NULL;
@@ -110,7 +115,7 @@ int main()
 				{
 					if (!(buffer->intersections = malloc(sizeof(stringlistnode))))
 					{
-						printf("Memory access error");
+						printf("Memory access error\n");
 						return 0;
 					}
 					s->intersections->next = NULL;
@@ -122,7 +127,7 @@ int main()
 		}
 	}
 	j = 1;
-	buffer = &shapelist;
+	buffer = shapelist.next;
 	stringlistnode *intersection;
 	while (buffer != NULL)
 	{

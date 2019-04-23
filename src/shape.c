@@ -58,38 +58,45 @@ int interpret(char *string, Shape **s)
 "-1" - неизвестная фигура
 "-2" - неправильные параметры*/
 {
+	
 	char chars[] = {'(', ')', ' ', ','};
 	char **strings = split(string, chars, 4);
-	if (equals(strings[0], "circle"))
+	if (strcmp(strings[0], "circle") == 0)
 	{
 		Shape *circle = malloc(sizeof(Shape));
 		if (circle == NULL)
 			return 0;
 		int counter = 0;
-		while (strings[1 + counter++])
-			;
+		while (strings[1 + counter++]);
+		counter--;
 		if (counter != 3)
 		{
 			free(circle);
 			return -2;
 		}
-		circle->points[0].x = parseFloat(strings[1]);
-		circle->points[0].y = parseFloat(strings[2]);
+		circle->points = malloc(sizeof(Point) * 4);
+		if (circle->points == NULL)
+		{
+			free(circle);
+			return 1;
+		}
+		circle->points[0].x = strtof(strings[1], '\0');
+		circle->points[0].y = strtof(strings[2], '\0');
 		circle->radius = parseFloat(strings[3]);
 		circle->n = 1;
 		*s = circle;
 		free(strings);
 		return 0;
 	}
-	else if (equals(strings[0], "triangle"))
+	else if (strcmp(strings[0], "triangle") == 0)
 	{
 		strings++;
 		Shape *trgl = malloc(sizeof(Shape));
 		if (trgl == NULL)
 			return 1;
 		int counter = 0;
-		while (strings[counter++])
-			;
+		while (strings[counter++]);
+		counter--;
 		if (counter != 8)
 		{
 			free(trgl);
@@ -106,23 +113,23 @@ int interpret(char *string, Shape **s)
 		for (int i = 0; i < 8; i += 2)
 		{
 			p = trgl->points[j++];
-			p.x = parseFloat(strings[i]);
-			p.y = parseFloat(strings[i + 1]);
+			p.x = strtof(strings[i], '\0');
+			p.y = strtof(strings[i + 1], '\0');
 		}
 		trgl->radius = 0;
 		*s = trgl;
 		free(strings);
 		return 0;
 	}
-	else if (equals(strings[0], "polygon"))
+	else if (strcmp(strings[0], "polygon") == 0)
 	{
 		strings++;
 		Shape *shape = malloc(sizeof(Shape));
 		if (shape == NULL)
 			return 1;
 		int counter = 0;
-		while (strings[counter++])
-			;
+		while (strings[counter++]);
+		counter--;
 		if ((counter % 2 == 1) || (counter < 8))
 		{
 			free(shape);
@@ -140,8 +147,8 @@ int interpret(char *string, Shape **s)
 		for (int i = 0; i < counter; i += 2)
 		{
 			p = shape->points[j++];
-			p.x = parseFloat(strings[i]);
-			p.y = parseFloat(strings[i + 1]);
+			p.x = strtof(strings[i], '\0');
+			p.y = strtof(strings[i + 1], '\0');
 		}
 		shape->radius = 0;
 		*s = shape;
@@ -156,6 +163,9 @@ int interpret(char *string, Shape **s)
 
 int isIntersects(const Shape *s1, const Shape *s2)
 { // работа по принципу теоремы о разделяющей оси
+	double cosinus;
+	Point *points2 = s2->points;
+	Point *points1 = s1->points;
 	if (s1->radius)
 	{
 		if (s2->radius)
@@ -167,8 +177,7 @@ int isIntersects(const Shape *s1, const Shape *s2)
 		else
 		{
 		PolyCircle:
-			double cosinus;
-			Point *points2 = s2->points;
+			points2 = s2->points;
 			for (int i = 0; i < s2->n - 1; i++)
 			{
 				Point vector = {points2[i + 1].x - points2[i].x,
@@ -201,9 +210,7 @@ int isIntersects(const Shape *s1, const Shape *s2)
 		}
 		else
 		{
-			double cosinus;
-			Point *points2 = s2->points;
-			Point *points1 = s1->points;
+			
 			for (int k = 0; k < 2; k++)
 			{
 				for (int i = 0; i < s2->n - 1; i++)

@@ -10,24 +10,16 @@ int lsearch(char *chars, int n, char c)
 	return -1;
 }
 
-int equals(char *string1, char *string2)
-{
-	while (*(string1++) && *(string2++))
-	{
-		if (*string1 != *string2)
-			return 0;
-	}
-	return 1;
-}
-
 char **split(char *string, char *chars, int n)
 /* замещает символы строки встречающиеся в chars на NULL
 и возвращает массив подстрок, заканчивающийся нулевым адресом*/
 {
 	int counter = 0;
 	char *buffer = string;
+	size_t s_size = 0;
 	while (*(string++))
 	{
+		s_size++;
 		for (int i = 0; i < n; i++)
 		{
 			if (*string == chars[i])
@@ -42,22 +34,19 @@ char **split(char *string, char *chars, int n)
 	{
 		return NULL;
 	}
-
 	string = buffer;
 	int j = 1;
 	*strings = buffer;
-	while (*(string++))
-	{
-		for (int i = 0; i < n; i++)
-		{
-			if (*string == chars[i])
-			{
-				*string = EOF;
-				if ((string + 1) && (lsearch(chars, n, string[1]) == -1))
-				{
-					strings[j++] = string + 1;
-				}
+	for(int i = 0; i < s_size; i++){
+		for(int k = 0; k < n; k++){
+			if(string[i] == chars[k]){
+				string[i] = '\0';
 			}
+		}
+	}
+	for(int i = 0; i < s_size - 1; i++){
+		if(string[i] == '\0' && string[i + 1] != '\0'){
+			strings[j++] = string + i + 1;
 		}
 	}
 	strings[j] = NULL;
