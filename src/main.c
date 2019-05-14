@@ -1,21 +1,21 @@
 #include <stdio.h>
 #include "shape.h"
 
-
+/*
 struct stringlistnode;
 typedef struct stringlistnode stringlistnode;
 struct stringlistnode
 {
 	stringlistnode *next;
 	char *string;
-};
+};*/
 struct listnode;
 typedef struct listnode listnode;
 struct listnode
 {
 	Shape *s;
 	listnode *next;
-	stringlistnode *intersections;
+	//stringlistnode *intersections;
 };
 
 int stringStream(char *string)
@@ -24,7 +24,7 @@ int stringStream(char *string)
 	int i = 0;
 	while ((buffer = getchar()) != '\n')
 	{
-		if ((buffer == EOF) || (i > 254))
+		if ((buffer == '@') || (i > 254))
 			return 0;
 		string[i++] = buffer;
 	}
@@ -32,14 +32,21 @@ int stringStream(char *string)
 	return 1;
 }
 
-
+/*
 void addIntersection(stringlistnode *node, const Shape *s, size_t n)
 {
+	if(node == NULL)
+		return;
 	while (node->next != NULL)
 	{
 		node = node->next;
 	}
 	if (!(node->next = malloc(sizeof(stringlistnode))))
+	{
+		printf("Memory access error\n");
+		return;
+	}
+	if (!(node->next->string = malloc(sizeof(char)*260)))
 	{
 		printf("Memory access error\n");
 		return;
@@ -58,15 +65,17 @@ void addIntersection(stringlistnode *node, const Shape *s, size_t n)
 		sprintf(node->string, "%d. polygon", n);
 	}
 }
-
+*/
 int main()
 {
 	char string[255];
-	listnode shapelist = {NULL, NULL, NULL};
-	listnode *buffer = &shapelist;
 	size_t counter = 0;
+	listnode shapelist = (listnode){NULL, NULL};
+	listnode *buffer = &shapelist;
 	while (stringStream(string))
 	{
+		if (string[0] == '\0')
+			continue;
 		counter++;
 		if (!(buffer->next = malloc(sizeof(listnode))))
 		{
@@ -87,12 +96,29 @@ int main()
 		default:
 			buffer = buffer->next;
 			buffer->next = NULL;
-			buffer->intersections = NULL;
+			//buffer->intersections = NULL;
 		}
 	}
 	listnode *s = &shapelist;
-	int j;
-	for (int i = 0; i < counter - 1; i++)
+	char intersect[counter][counter];
+	int j = 0;
+	for (size_t i = 0; i < counter - 1; i++)
+	{
+		s = s->next;
+		buffer = s->next;
+		j = i + 1;
+		while (buffer != NULL)
+		{
+			if (isIntersects(s->s, buffer->s))
+			{
+				intersect[i][j] = 1;
+				intersect[j][i] = 1;
+			}
+			buffer = buffer->next;
+			j++;
+		}
+	}
+	/*for (int i = 0; i < counter - 1; i++)
 	{
 		s = s->next;
 		buffer = s->next;
@@ -109,8 +135,13 @@ int main()
 						return 0;
 					}
 					s->intersections->next = NULL;
+					if (!(s->intersections->string = malloc(sizeof(char)*260)))
+					{
+						printf("Memory access error\n");
+						return 0;
+					}
 				}
-				addIntersection(s->intersections, buffer->s, j);
+				addIntersection(s->intersections, buffer->s, j + 1);
 				if (buffer->intersections == NULL)
 				{
 					if (!(buffer->intersections = malloc(sizeof(stringlistnode))))
@@ -119,28 +150,40 @@ int main()
 						return 0;
 					}
 					s->intersections->next = NULL;
+					if (!(buffer->intersections->string = malloc(sizeof(char)*260)))
+					{
+						printf("Memory access error\n");
+						return 0;
+					}
 				}
-				addIntersection(buffer->intersections, s->s, i);
+				addIntersection(buffer->intersections, s->s, i + 1);
 			}
 			buffer = buffer->next;
 			j++;
 		}
-	}
-	j = 1;
+	}*/
+	j = 0;
 	buffer = shapelist.next;
-	stringlistnode *intersection;
 	while (buffer != NULL)
 	{
-		printf("%d. %s\n", j++, toString(buffer->s));
-		intersection = buffer->intersections;
-		printf("\tperimeter: %f\n\tarea: %f\n\tintersects:\n",
+		printf("%d. %s\n\tprimeter = %f\n\tarea = %f\n\tintersects:\n", j + 1, toString(buffer->s),
 			   getPerimeter(buffer->s), getArea(buffer->s));
-		while (intersection != NULL)
-		{
-			printf("\t  %s\n", intersection->string);
-			intersection = intersection->next;
+		for(size_t i = 0; i < counter; i++){
+			if(intersect[j][i] == 1){
+				switch(buffer->s->n){
+					case 1:
+						printf("\t  %d. circle\n", i + 1);
+						break;
+					case 4:
+						printf("\t  %d. triangle\n", i + 1);
+						break;
+					default:
+						printf("\t  %d. polygon\n", i + 1);
+				}
+			}
 		}
 		buffer = buffer->next;
+		j++;
 	}
 	return 1;
 }

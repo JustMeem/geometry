@@ -24,6 +24,6 @@ typedef struct Shape
 
 char *toString(const Shape *s);
 int interpret(char *string, Shape **s);
-int isIntersects(const Shape *s1, const Shape *s2);
+int isIntersects(Shape *s1, Shape *s2);
 float getPerimeter(const Shape *shape);
 float getArea(const Shape *shape);

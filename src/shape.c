@@ -18,8 +18,8 @@ int isSectionIntersects(const Point *sect1, const Point *sect2)
 
 char *toString(const Shape *s)
 {
-	char *string = malloc(sizeof(char) * 100);
-	if (string)
+	char *string = malloc(sizeof(char) * 200);
+	if (!string)
 		return NULL;
 	if (s->radius)
 	{
@@ -35,16 +35,20 @@ char *toString(const Shape *s)
 		}
 		else
 		{
-			sprintf(string, "shape((");
-			string += 7;
+			sprintf(string, "polygon((");
+			string += 9;
 		}
 		for (int i = 0; i < s->n; i++)
 		{
 			sprintf(string, "% .4f % .4f ,", s->points[i].x, s->points[i].y);
-			string += abs((int)(s->points[i].x / 10)) +
-					  abs((int)(s->points[i].y / 10)) + 15;
+			string += abs((int)(s->points[i].x / 10)) + 5 +
+					  abs((int)(s->points[i].y / 10)) + 5 + 7;
 		}
+		string--;
+		sprintf(string ,"))");
+		string += 3;
 		string[-1] = '\0';
+		string = buffer;
 	}
 	return string;
 }
@@ -82,7 +86,7 @@ int interpret(char *string, Shape **s)
 		}
 		circle->points[0].x = strtof(strings[1], '\0');
 		circle->points[0].y = strtof(strings[2], '\0');
-		circle->radius = parseFloat(strings[3]);
+		circle->radius = strtof(strings[3], '\0');
 		circle->n = 1;
 		*s = circle;
 		free(strings);
@@ -108,17 +112,26 @@ int interpret(char *string, Shape **s)
 			free(trgl);
 			return 1;
 		}
-		Point p;
+		Point *p;
 		int j = 0;
 		for (int i = 0; i < 8; i += 2)
 		{
-			p = trgl->points[j++];
-			p.x = strtof(strings[i], '\0');
-			p.y = strtof(strings[i + 1], '\0');
+			p = trgl->points + j++;
+			p->x = strtof(strings[i], '\0');
+			p->y = strtof(strings[i + 1], '\0');
+		}
+		p = trgl->points;
+		if(p->x != p[3].x || p->y != p[3].y){
+			for(int i = 0; i < 4; i++){
+				free(p + i);
+			}
+			free(trgl);
+			return -2;
 		}
 		trgl->radius = 0;
+		trgl->n = 4;
 		*s = trgl;
-		free(strings);
+		free(--strings);
 		return 0;
 	}
 	else if (strcmp(strings[0], "polygon") == 0)
@@ -142,17 +155,26 @@ int interpret(char *string, Shape **s)
 			free(shape);
 			return 1;
 		}
-		Point p;
+		Point *p;
 		int j = 0;
 		for (int i = 0; i < counter; i += 2)
 		{
-			p = shape->points[j++];
-			p.x = strtof(strings[i], '\0');
-			p.y = strtof(strings[i + 1], '\0');
+			p = shape->points + j++;
+			p->x = strtof(strings[i], '\0');
+			p->y = strtof(strings[i + 1], '\0');
+		}
+		p = shape->points;
+		if(p->x != p[counter / 2].x || p->y != p[counter / 2].y){
+			for(int i = 0; i < counter / 2; i++){
+				free(p + i);
+			}
+			free(shape);
+			return -2;
 		}
 		shape->radius = 0;
+		shape->n = counter / 2;
 		*s = shape;
-		free(strings);
+		free(--strings);
 		return 0;
 	}
 	else
@@ -161,7 +183,7 @@ int interpret(char *string, Shape **s)
 	}
 }
 
-int isIntersects(const Shape *s1, const Shape *s2)
+int isIntersects(Shape *s1, Shape *s2)
 { // работа по принципу теоремы о разделяющей оси
 	double cosinus;
 	Point *points2 = s2->points;
