@@ -1,3 +1,5 @@
 geometry_project.exe
+build/*.*
+!build/.gitkeep
 .vscode
 !.vscode/tasks.json
