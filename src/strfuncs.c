@@ -37,15 +37,20 @@ char **split(char *string, char *chars, int n)
 	string = buffer;
 	int j = 1;
 	*strings = buffer;
-	for(int i = 0; i < s_size; i++){
-		for(int k = 0; k < n; k++){
-			if(string[i] == chars[k]){
+	for (int i = 0; i < s_size; i++)
+	{
+		for (int k = 0; k < n; k++)
+		{
+			if (string[i] == chars[k])
+			{
 				string[i] = '\0';
 			}
 		}
 	}
-	for(int i = 0; i < s_size - 1; i++){
-		if(string[i] == '\0' && string[i + 1] != '\0'){
+	for (int i = 0; i < s_size - 1; i++)
+	{
+		if (string[i] == '\0' && string[i + 1] != '\0')
+		{
 			strings[j++] = string + i + 1;
 		}
 	}
@@ -73,4 +78,3 @@ float parseFloat(char *string) // на вход принимается толь�
 	}
 	return flag ? -num : num;
 }
-

@@ -45,7 +45,7 @@ char *toString(const Shape *s)
 					  abs((int)(s->points[i].y / 10)) + 5 + 7;
 		}
 		string--;
-		sprintf(string ,"))");
+		sprintf(string, "))");
 		string += 3;
 		string[-1] = '\0';
 		string = buffer;
@@ -62,7 +62,7 @@ int interpret(char *string, Shape **s)
 "-1" - неизвестная фигура
 "-2" - неправильные параметры*/
 {
-	
+
 	char chars[] = {'(', ')', ' ', ','};
 	char **strings = split(string, chars, 4);
 	if (strcmp(strings[0], "circle") == 0)
@@ -71,7 +71,8 @@ int interpret(char *string, Shape **s)
 		if (circle == NULL)
 			return 0;
 		int counter = 0;
-		while (strings[1 + counter++]);
+		while (strings[1 + counter++])
+			;
 		counter--;
 		if (counter != 3)
 		{
@@ -99,7 +100,8 @@ int interpret(char *string, Shape **s)
 		if (trgl == NULL)
 			return 1;
 		int counter = 0;
-		while (strings[counter++]);
+		while (strings[counter++])
+			;
 		counter--;
 		if (counter != 8)
 		{
@@ -121,8 +123,10 @@ int interpret(char *string, Shape **s)
 			p->y = strtof(strings[i + 1], '\0');
 		}
 		p = trgl->points;
-		if(p->x != p[3].x || p->y != p[3].y){
-			for(int i = 0; i < 4; i++){
+		if (p->x != p[3].x || p->y != p[3].y)
+		{
+			for (int i = 0; i < 4; i++)
+			{
 				free(p + i);
 			}
 			free(trgl);
@@ -141,7 +145,8 @@ int interpret(char *string, Shape **s)
 		if (shape == NULL)
 			return 1;
 		int counter = 0;
-		while (strings[counter++]);
+		while (strings[counter++])
+			;
 		counter--;
 		if ((counter % 2 == 1) || (counter < 8))
 		{
@@ -164,8 +169,10 @@ int interpret(char *string, Shape **s)
 			p->y = strtof(strings[i + 1], '\0');
 		}
 		p = shape->points;
-		if(p->x != p[counter / 2].x || p->y != p[counter / 2].y){
-			for(int i = 0; i < counter / 2; i++){
+		if (p->x != p[counter / 2].x || p->y != p[counter / 2].y)
+		{
+			for (int i = 0; i < counter / 2; i++)
+			{
 				free(p + i);
 			}
 			free(shape);
@@ -232,7 +239,7 @@ int isIntersects(Shape *s1, Shape *s2)
 		}
 		else
 		{
-			
+
 			for (int k = 0; k < 2; k++)
 			{
 				for (int i = 0; i < s2->n - 1; i++)

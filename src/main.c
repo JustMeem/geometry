@@ -168,17 +168,20 @@ int main()
 	{
 		printf("%d. %s\n\tprimeter = %f\n\tarea = %f\n\tintersects:\n", j + 1, toString(buffer->s),
 			   getPerimeter(buffer->s), getArea(buffer->s));
-		for(size_t i = 0; i < counter; i++){
-			if(intersect[j][i] == 1){
-				switch(buffer->s->n){
-					case 1:
-						printf("\t  %d. circle\n", i + 1);
-						break;
-					case 4:
-						printf("\t  %d. triangle\n", i + 1);
-						break;
-					default:
-						printf("\t  %d. polygon\n", i + 1);
+		for (size_t i = 0; i < counter; i++)
+		{
+			if (intersect[j][i] == 1)
+			{
+				switch (buffer->s->n)
+				{
+				case 1:
+					printf("\t  %d. circle\n", i + 1);
+					break;
+				case 4:
+					printf("\t  %d. triangle\n", i + 1);
+					break;
+				default:
+					printf("\t  %d. polygon\n", i + 1);
 				}
 			}
 		}
