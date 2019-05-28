@@ -1,16 +1,16 @@
 #pragma once
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #ifndef MOD
 #define MOD(x) ((x) < 0 ? (-x) : (x))
 #endif
 
-int lsearch(char *chars, int n, char c);
+int lsearch(char* chars, int n, char c);
 
-int equals(char *string1, char *string2);
+int equals(char* string1, char* string2);
 
-char **split(char *string, char *chars, int n);
+char** split(char* string, char* chars, int n);
 
-float parseFloat(char *string);
+float parseFloat(char* string);
